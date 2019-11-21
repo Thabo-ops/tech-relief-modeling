@@ -1,0 +1,35 @@
+@startuml TechReliefUseCases
+User <|-- Donor
+User <|-- NGO
+User <|-- Beneficiary
+
+scale 800 width
+scale 600 height
+
+rectangle TechRelief {
+  left to right direction
+
+  together {
+    User -- (Signup)
+    User -- (Signin)
+    User -- (Verify account email)
+  }
+
+  Donor -- (Donate device)
+  Donor -- (Update account details)
+  Donor -- (Update device details)
+  Donor -- (Update device status)
+
+  NGO -- (Register beneficiary)
+  NGO -- (Update NGO details)
+  NGO -- (View beneficiaries)
+  NGO -- (Update/Delete beneficiary)
+  NGO -- (Assign device) 
+  NGO -- (View donated devices)
+  NGO -- (View device status)
+  
+
+  Beneficiary -- (Update device tracking status)
+
+}
+@enduml
