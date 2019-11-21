@@ -1,0 +1,70 @@
+@startuml TechRelief
+class USER {
+ -passwordHash
+ +id
+ +email
+ +contactNumber
+ +userType
+ +physicalAddress
+ +signup(email, password)
+ +completeProfile(firstName, lastName, contactNumber, userType)
+ +signin(email, password)
+ +recoverPassword(email)
+ +verifyEmail()
+}
+
+class DONOR {
+   +firstName
+   +lastName
+   +numberOfDonatedDevices
+   +updateAccountDetails(userID, accountDetails)
+   +donateDevice(userID, deviceDetails)
+   +updateDeviceStatus(userID, deviceID, deviceDetails)
+   +updateDeviceDetails(userID, deviceID, deviceDetails)
+}
+
+class NGO {
+  +institutionName
+  +numberOfBeneficiaries
+  +totalDevicesReceived
+  +totalDevicesAssigned
+  +totalDefectiveDevices
+  +totalRevokedDevices
+  +registerBeneficiary(ngoID, beneficiaryDetails)
+  +updateNGODetails(ngoID, ngoDetails)
+  +viewBeneficiaries(ngoID)
+}
+
+
+/' 
+ We need the BENEFICIARY entity since they have to also update on the plaform if they really
+ received the donated device this helps with the certainty that they were really helped
+ and it helps with realistic statistics and record keeping.
+'/
+class BENEFICIARY {
+}
+
+class DEVICE {
+}
+
+
+'Associations
+USER ^-- NGO
+USER ^-- BENEFICIARY
+USER ^-- DONOR
+
+/' 
+ Being specific on the next line's association(Aggregation) 
+ helps with clearly stating the relation ships between the parent and child.
+ So in this case a BENEFICIARY can still exist after an NGO is deleted from the platform
+'/
+NGO o-- BENEFICIARY : belongs_to
+DONOR "0..*" ---> "1..*" DEVICE: donates
+NGO "0..*" ---> "1..*" DEVICE: assigns
+
+/' 
+ Can a BENEFICIARY receive more that one device????????
+'/
+BENEFICIARY "0..*" ---> "1..*" DEVICE: recieves
+
+@enduml
