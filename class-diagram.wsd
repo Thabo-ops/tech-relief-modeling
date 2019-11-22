@@ -1,38 +1,39 @@
-@startuml TechRelief
+@startuml TechReliefClassDiagram
+
 class USER {
- -passwordHash
- +id
- +email
- +contactNumber
- +userType
- +physicalAddress
- +signup(email, password)
- +completeProfile(firstName, lastName, contactNumber, userType)
- +signin(email, password)
- +recoverPassword(email)
- +verifyEmail()
+ -passwordHash : string
+ +id : string
+ +email : string 
+ +contactNumber : string
+ +userType : string
+ +physicalAddress : string
+ +signup(email, password) : void
+ +completeProfile(firstName, lastName, contactNumber, userType) : void
+ +signin(email, password) : void
+ +recoverPassword(email) : void
+ +verifyEmail() : void
 }
 
 class DONOR {
-   +firstName
-   +lastName
-   +numberOfDonatedDevices
-   +updateAccountDetails(userID, accountDetails)
-   +donateDevice(userID, deviceDetails)
-   +updateDeviceStatus(userID, deviceID, deviceDetails)
-   +updateDeviceDetails(userID, deviceID, deviceDetails)
+   +firstName : string
+   +lastName : string
+   +numberOfDonatedDevices: number
+   +updateAccountDetails(userID, accountDetails) : void
+   +donateDevice(userID, deviceDetails) : void
+   +updateDeviceStatus(userID, deviceID, deviceDetails) : void
+   +updateDeviceDetails(userID, deviceID, deviceDetails) : void
 }
 
 class NGO {
-  +institutionName
-  +numberOfBeneficiaries
-  +totalDevicesReceived
-  +totalDevicesAssigned
-  +totalDefectiveDevices
-  +totalRevokedDevices
-  +registerBeneficiary(ngoID, beneficiaryDetails)
-  +updateNGODetails(ngoID, ngoDetails)
-  +viewBeneficiaries(ngoID)
+  +institutionName : string
+  +numberOfBeneficiaries : number
+  +totalDevicesReceived : number
+  +totalDevicesAssigned : number
+  +totalDefectiveDevices : number
+  +totalRevokedDevices : number
+  +registerBeneficiary(ngoID, beneficiaryDetails) : void
+  +updateNGODetails(ngoID, ngoDetails) : void
+  +viewBeneficiaries(ngoID) : void
 }
 
 
@@ -42,9 +43,23 @@ class NGO {
  and it helps with realistic statistics and record keeping.
 '/
 class BENEFICIARY {
+  +hasDevice : boolean
+  +ngoID : string
+  +age : number
+  +updateDeviceStatus(deviceID) : void
 }
 
 class DEVICE {
+  +make : string
+  +model : string
+  +type : string
+  +donatedDate : string
+  +deviceImageUrl : string
+  +description : string
+  +donorID : string
+  +ngoID : string
+  +received : boolean
+  +revoked : boolean
 }
 
 
@@ -58,13 +73,22 @@ USER ^-- DONOR
  helps with clearly stating the relation ships between the parent and child.
  So in this case a BENEFICIARY can still exist after an NGO is deleted from the platform
 '/
-NGO o-- BENEFICIARY : belongs_to
-DONOR "0..*" ---> "1..*" DEVICE: donates
-NGO "0..*" ---> "1..*" DEVICE: assigns
+
+NGO *------ BENEFICIARY : belongs_to
+note right on link #LightSeaGreen
+	If a NGO is deleted then the beneficiary 
+  shoould also be deleted from the system
+end note
+DONOR "0..*" -----> "1..*" DEVICE: donates
+NGO "0..*" o---- "1..*" DEVICE: assigns
+note right on link #LightSeaGreen
+	If a NGO is deleted then the device 
+  should go back to the donor
+end note
 
 /' 
  Can a BENEFICIARY receive more that one device????????
 '/
-BENEFICIARY "0..*" ---> "1..*" DEVICE: recieves
+BENEFICIARY "0..*" -----> "1..*" DEVICE: recieves
 
 @enduml
