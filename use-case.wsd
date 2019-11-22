@@ -18,7 +18,7 @@ rectangle TechRelief {
   Donor -- (Donate device)
   Donor -- (Update account details)
   Donor -- (Update device details)
-  Donor -- (Update device status)
+  Donor -- (Revoke device)
 
   NGO -- (Register beneficiary)
   NGO -- (Update NGO details)

@@ -5,6 +5,7 @@ class USER {
  +id : string
  +email : string 
  +contactNumber : string
+ +registrationDate: string
  +userType : string
  +physicalAddress : string
  +signup(email, password) : void
@@ -15,27 +16,32 @@ class USER {
 }
 
 class DONOR {
+   +id: string
    +firstName : string
    +lastName : string
    +numberOfDonatedDevices: number
    +updateAccountDetails(userID, accountDetails) : void
    +donateDevice(userID, deviceDetails) : void
-   +updateDeviceStatus(userID, deviceID, deviceDetails) : void
+   +revokeDevce(userID, deviceID, deviceDetails) : void
    +updateDeviceDetails(userID, deviceID, deviceDetails) : void
 }
 
 class NGO {
+  +id: string
   +institutionName : string
   +numberOfBeneficiaries : number
   +totalDevicesReceived : number
   +totalDevicesAssigned : number
   +totalDefectiveDevices : number
   +totalRevokedDevices : number
-  +registerBeneficiary(ngoID, beneficiaryDetails) : void
-  +updateNGODetails(ngoID, ngoDetails) : void
-  +viewBeneficiaries(ngoID) : void
+  +registerBeneficiary(beneficiaryDetails) : void
+  +deleteUpdateBeneficiary(beneficiaryID) : void
+  +updateNGODetails(ngoDetails) : void
+  +viewBeneficiaries() : void
+  +viewDonatedDevices() : void
+  +assignDeviceToBeneficiary(beneficiaryID, deviceID)
+  +viewDeviceStatus(deviceID)
 }
-
 
 /' 
  We need the BENEFICIARY entity since they have to also update on the plaform if they really
@@ -43,6 +49,7 @@ class NGO {
  and it helps with realistic statistics and record keeping.
 '/
 class BENEFICIARY {
+  +id: string
   +hasDevice : boolean
   +ngoID : string
   +age : number
@@ -50,6 +57,7 @@ class BENEFICIARY {
 }
 
 class DEVICE {
+  +id: string
   +make : string
   +model : string
   +type : string
@@ -62,6 +70,14 @@ class DEVICE {
   +revoked : boolean
 }
 
+class ADMIN {
+  +email: string
+  +passwordHash: string
+  +viewNGOs(): void
+  +deleteNGO(ngoID): void
+  +assignDeviceToNGO: void
+}
+
 
 'Associations
 USER ^-- NGO
@@ -71,16 +87,16 @@ USER ^-- DONOR
 /' 
  Being specific on the next line's association(Aggregation) 
  helps with clearly stating the relation ships between the parent and child.
- So in this case a BENEFICIARY can still exist after an NGO is deleted from the platform
+ So in this case a BENEFICIARY can still exist after a NGO is deleted from the platform
 '/
 
-NGO *------ BENEFICIARY : belongs_to
+NGO "1..1" *------ "1..*" BENEFICIARY : belongs_to
 note right on link #LightSeaGreen
 	If a NGO is deleted then the beneficiary 
   shoould also be deleted from the system
 end note
-DONOR "0..*" -----> "1..*" DEVICE: donates
-NGO "0..*" o---- "1..*" DEVICE: assigns
+DONOR "1..1" -----> "1..*" DEVICE: donates
+NGO "1..1" o----> "1..*" DEVICE: assigns
 note right on link #LightSeaGreen
 	If a NGO is deleted then the device 
   should go back to the donor
@@ -89,6 +105,10 @@ end note
 /' 
  Can a BENEFICIARY receive more that one device????????
 '/
-BENEFICIARY "0..*" -----> "1..*" DEVICE: recieves
+BENEFICIARY "1..1" -----> "1..*" DEVICE: recieves
+
+ADMIN "1..1" ------> "1..*" DEVICE: re-assings
+
+ADMIN "1..1" ------> "1..*" NGO: manages
 
 @enduml
